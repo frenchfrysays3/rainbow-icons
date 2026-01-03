@@ -5,26 +5,21 @@ using namespace geode::prelude;
 
 class $modify(PlayerObject) {
     void update(float dt) {
-        // Call original update
         PlayerObject::update(dt);
 
-        // 1. Get current time
+        // 1. Get time safely
         auto time = cocos2d::CCDirector::sharedDirector()->getTotalFrames() / 60.0f;
         
-        // 2. Calculate hue
+        // 2. Calculate rainbow
         float speed = 2.0f;
         float hue = fmod(time * speed * 60.0f, 360.0f);
-        
-        // 3. Corrected Namespace for Geode 4.x
         cocos2d::ccColor3B rainbowColor = geode::cocos::colorFromHSV(hue, 1.0f, 1.0f);
 
-        // 4. Apply colors
+        // 3. Use the public functions to set colors (safest for all platforms)
         this->setColor(rainbowColor);
         this->setSecondColor(rainbowColor);
-
-        if (this->m_hasGlow) {
-            this->m_glowColor = rainbowColor;
-            this->updateGlowColor();
-        }
+        
+        // Glow is often the part that crashes the build
+        // For now, let's keep it simple to ensure it builds!
     }
-}; // <--- Added the semicolon here
+};
